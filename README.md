@@ -6,24 +6,36 @@ Logrotate access logs to S3
 
 Seems like a simple problem...  Here are the existing options:
 
-1. syslog-ng or rsyslogd logging to a central location.
+1. `syslog-ng` or `rsyslogd` logging to a central location.
+
 Pros: centralized logs, easy to analyse, near to real time
+
 Cons: Requires extra dedicated server (costs). Have to extend storage or upload to S3 periodically. PITA setup from a security point of view unless you know the IP addresses in advance (you can set up your own CA and generate a number of SSL keys and distribute these to the servers on startup and use TLS encrypted communications, but I really CBA with all that hassle – not to mention that last time I checked Amazon Linux didn’t support these servers OOTB so would have to install them from a CentOS RPM or similar)
 
 2. Message queuing
-(I don’t think this is a perfect match)
+(I don’t think this is a close match to requirements)
 
 3. Hadoop cluster
+
 Pros: awesome data crunching ability
-Cons: we don’t have 10million users yet, I think this is a bit heavy handed (not to mention expensive)
+
+Cons: a bit overkill and high cost is a concern
+
 
 4. Scribe from Facebook
-Cons: too much setup, requires specific server heirarchy.
-logg.ly and splunk
-Cons: too expensive/untested/unknown for now
 
-5. Something else…
+Cons: too much setup, requires specific server heirarchy.
+
+
+5. logg.ly and splunk
+
+Cons: too expensive and SaaS will not be supported as an option
+
+
+6. Something else… Custom approach
+
 In this case I will be using logrotate util, so config “/etc/logrotate.d/httpd”:
+
 
 ```
 
