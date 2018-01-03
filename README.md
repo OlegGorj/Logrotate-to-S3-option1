@@ -8,7 +8,7 @@ Seems like a simple problem...  Here are the existing options:
 
 1. syslog-ng or rsyslogd logging to a central location.
 Pros: centralized logs, easy to analyse, near to real time
-Cons: Requires extra dedicated server (costs). Have to extend storage or upload to S3 periodically. PITA setup from a security point of view unless you know the IP addresses in advance (you can set up your own CA and generate a number of SSL keys and distribute these to the servers on startup and use TLS encrypted communications, but I really CBA with all that hassle – not to mention that last time I checked Amazon Linux didn’t support these serversOOTB so I’d have to install them from a CentOS RPM or similar)
+Cons: Requires extra dedicated server (costs). Have to extend storage or upload to S3 periodically. PITA setup from a security point of view unless you know the IP addresses in advance (you can set up your own CA and generate a number of SSL keys and distribute these to the servers on startup and use TLS encrypted communications, but I really CBA with all that hassle – not to mention that last time I checked Amazon Linux didn’t support these servers OOTB so would have to install them from a CentOS RPM or similar)
 
 2. Message queuing
 (I don’t think this is a perfect match)
