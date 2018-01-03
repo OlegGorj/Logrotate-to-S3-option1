@@ -41,3 +41,52 @@ In this case I will be using logrotate util, so config “/etc/logrotate.d/httpd
 ```
 
 
+Let’s go through the options of logrotate config:
+
+details of logrotate utility are here: https://linux.die.net/man/8/logrotate
+
+> weekly: Rotate logs once per week. Available options are daily, weekly, monthly, and yearly.
+> missingok: If no *access.* files are found, don’t freak out :)
+> rotate 52: Keep 52 files before deleting old log files (Thats a default of 52 weeks, or one years worth of logs!)
+> compress: Compress (gzip) log files
+delaycompress: Delays compression until 2nd time around rotating. As a result, you’ll have one current log, one older log which remains uncompressed, and then a series of compressed logs.
+compresscmd: Set which command to used to compress. Defaults to gzip.
+uncompresscmd: Set the command to use to uncompress. Defaults to gunzip.
+> notifempty: Don’t rotate empty files
+> create 640 root adm: Create new log files with set permissions/owner/group, This example creates file with user rootand group adm. In many systems, it will be root for owner and group.
+> sharedscripts: Run postrotate script after all logs are rotated. If this is not set, it will run postrotate after each matching file is rotated.
+> postrotate: Scripts to run after rotating is done. I.e, Apache is reloaded so it writes to the newly created log files. Reloading Apache (gracefully) lets any current connection finish before reloading and setting the new log file to be written to.
+> prerotate: Run before log rotating begins
+
+
+so, file `/usr/local/utils/apache_log_uploader.sh` would look like:
+
+```
+APACHE_LOG_PATH='/var/log/httpd'
+LOG_GLOB='*.access.log-*'
+BUCKET_NAME='apache-access-logs'
+AWS_CLI='/usr/local/bin/aws'
+ 
+# Iterate over all log files matching regex in path
+for filepath in `ls $APACHE_LOG_PATH/$LOG_GLOB`
+do
+ # Check if is file
+ [[ -e $filepath ]] || continue
+ 
+ log_filename="$(hostname)_$(basename $filepath)"
+ 
+ # Check if file exists is S3 bucket
+ if [ `$AWS_CLI s3 --output text ls s3://$BUCKET_NAME/$log_filename | wc -l` -gt 0 ]
+ then
+ echo "File $log_filename exists"
+ continue
+ fi
+ 
+ $AWS_CLI s3 cp $filepath s3://$BUCKET_NAME/$log_filename
+done
+
+```
+
+
+
+
