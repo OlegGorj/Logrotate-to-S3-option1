@@ -62,9 +62,12 @@ details of logrotate utility are here: https://linux.die.net/man/8/logrotate
 - rotate 52: Keep 52 files before deleting old log files (Thats a default of 52 weeks, or one years worth of logs!)
 - compress: Compress (gzip) log files
 
-> delaycompress: Delays compression until 2nd time around rotating. As a result, you’ll have one current log, one older log which remains 
+> delaycompress: Delays compression until 2nd time around rotating. As a result, you’ll have one current log, one older log which remains
+
 > uncompressed, and then a series of compressed logs.
+
 > compresscmd: Set which command to used to compress. Defaults to gzip.
+
 > uncompresscmd: Set the command to use to uncompress. Defaults to gunzip.
 
 - notifempty: Don’t rotate empty files
@@ -74,16 +77,16 @@ details of logrotate utility are here: https://linux.die.net/man/8/logrotate
 - prerotate: Run before log rotating begins
 
 
-so, file `/usr/local/utils/apache_log_uploader.sh` would look like:
+so, file `/usr/local/utils/log_uploader.sh` would look like:
 
 ```
-APACHE_LOG_PATH='/var/log/httpd'
+LOG_PATH='/var/log/httpd'
 LOG_GLOB='*.access.log-*'
-BUCKET_NAME='apache-access-logs'
+BUCKET_NAME='access-logs'
 AWS_CLI='/usr/local/bin/aws'
  
 # Iterate over all log files matching regex in path
-for filepath in `ls $APACHE_LOG_PATH/$LOG_GLOB`
+for filepath in `ls $LOG_PATH/$LOG_GLOB`
 do
  # Check if is file
  [[ -e $filepath ]] || continue
