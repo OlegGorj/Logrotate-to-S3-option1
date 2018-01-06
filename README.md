@@ -39,14 +39,14 @@ In this case I will be using logrotate util, so config “/etc/logrotate.d/httpd
 
 ```
 
-/var/log/http/*access-* {
+/var/log/*access-* {
     missingok
     notifempty
     sharedscripts
     delaycompress
     postrotate
         /bin/systemctl reload httpd.service > /dev/null 2>/dev/null || true
-<strong>        /usr/local/utils/apache_log_uploader.sh > /dev/null 2>/dev/null || true</strong>
+<strong>        /usr/local/utils/log_uploader.sh > /dev/null 2>/dev/null || true</strong>
     endscript
 }
 
@@ -73,7 +73,7 @@ details of logrotate utility are here: https://linux.die.net/man/8/logrotate
 - notifempty: Don’t rotate empty files
 - create 640 root adm: Create new log files with set permissions/owner/group, This example creates file with user rootand group adm. In many systems, it will be root for owner and group.
 - sharedscripts: Run postrotate script after all logs are rotated. If this is not set, it will run postrotate after each matching file is rotated.
-- postrotate: Scripts to run after rotating is done. I.e, Apache is reloaded so it writes to the newly created log files. Reloading Apache (gracefully) lets any current connection finish before reloading and setting the new log file to be written to.
+- postrotate: Scripts to run after rotating is done. I.e service reloaded so it writes to the newly created log files. Reloading service (gracefully) lets any current connection finish before reloading and setting the new log file to be written to.
 - prerotate: Run before log rotating begins
 
 
